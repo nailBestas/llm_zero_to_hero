@@ -1,0 +1,114 @@
+{
+  "version": "1.0",
+  "truncation": null,
+  "padding": null,
+  "added_tokens": [
+    {
+      "id": 0,
+      "content": "[PAD]",
+      "single_word": false,
+      "lstrip": false,
+      "rstrip": false,
+      "normalized": false,
+      "special": true
+    },
+    {
+      "id": 1,
+      "content": "[UNK]",
+      "single_word": false,
+      "lstrip": false,
+      "rstrip": false,
+      "normalized": false,
+      "special": true
+    },
+    {
+      "id": 2,
+      "content": "[BOS]",
+      "single_word": false,
+      "lstrip": false,
+      "rstrip": false,
+      "normalized": false,
+      "special": true
+    },
+    {
+      "id": 3,
+      "content": "[EOS]",
+      "single_word": false,
+      "lstrip": false,
+      "rstrip": false,
+      "normalized": false,
+      "special": true
+    }
+  ],
+  "normalizer": null,
+  "pre_tokenizer": {
+    "type": "Whitespace"
+  },
+  "post_processor": null,
+  "decoder": null,
+  "model": {
+    "type": "BPE",
+    "dropout": null,
+    "unk_token": "[UNK]",
+    "continuing_subword_prefix": null,
+    "end_of_word_suffix": null,
+    "fuse_unk": false,
+    "byte_fallback": false,
+    "ignore_merges": false,
+    "vocab": {
+      "[PAD]": 0,
+      "[UNK]": 1,
+      "[BOS]": 2,
+      "[EOS]": 3,
+      "d": 4,
+      "e": 5,
+      "h": 6,
+      "l": 7,
+      "o": 8,
+      "r": 9,
+      "w": 10,
+      "el": 11,
+      "hel": 12,
+      "ld": 13,
+      "lo": 14,
+      "or": 15,
+      "wor": 16,
+      "hello": 17,
+      "world": 18
+    },
+    "merges": [
+      [
+        "e",
+        "l"
+      ],
+      [
+        "h",
+        "el"
+      ],
+      [
+        "l",
+        "d"
+      ],
+      [
+        "l",
+        "o"
+      ],
+      [
+        "o",
+        "r"
+      ],
+      [
+        "w",
+        "or"
+      ],
+      [
+        "hel",
+        "lo"
+      ],
+      [
+        "wor",
+        "ld"
+      ]
+    ]
+  }
+}

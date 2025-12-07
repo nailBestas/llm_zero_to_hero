@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mini-llm-api-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: mini-llm-api
+  ports:
+    - port: 80
+      targetPort: 8000
+      protocol: TCP

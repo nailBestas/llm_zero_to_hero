@@ -76,3 +76,57 @@ class MultiHeadSelfAttention(nn.Module):
         out = out.transpose(1, 2).contiguous().view(bsz, seq_len, self.embed_dim)
         out = self.out_proj(out)
         return out
+
+class FastMultiHeadSelfAttention(nn.Module):
+    """
+    PyTorch'un optimize scaled_dot_product_attention fonksiyonunu kullanan hızlı self-attention.
+    Sadece GPU ve belirli dtype'larda en iyi performansı verir.
+    """
+
+    def __init__(self, embed_dim: int, num_heads: int, dropout: float = 0.0, is_causal: bool = False):
+        super().__init__()
+        assert embed_dim % num_heads == 0, "embed_dim num_heads'e bölünebilmeli"
+
+        self.embed_dim = embed_dim
+        self.num_heads = num_heads
+        self.head_dim = embed_dim // num_heads
+        self.is_causal = is_causal
+
+        self.qkv_proj = nn.Linear(embed_dim, 3 * embed_dim)
+        self.out_proj = nn.Linear(embed_dim, embed_dim)
+        self.dropout_p = dropout
+
+    def _shape(self, x: torch.Tensor, bsz: int, seq_len: int) -> torch.Tensor:
+        # (b, seq, embed) -> (b, heads, seq, head_dim)
+        return x.view(bsz, seq_len, self.num_heads, self.head_dim).transpose(1, 2)
+
+    def forward(self, x: torch.Tensor, attn_mask: Optional[torch.Tensor] = None) -> torch.Tensor:
+        """
+        x: (batch, seq, embed_dim)
+        attn_mask: PyTorch'un scaled_dot_product_attention ile uyumlu mask
+        """
+        bsz, seq_len, _ = x.size()
+        qkv = self.qkv_proj(x)
+        q, k, v = qkv.chunk(3, dim=-1)
+
+        q = self._shape(q, bsz, seq_len)
+        k = self._shape(k, bsz, seq_len)
+        v = self._shape(v, bsz, seq_len)
+
+        # PyTorch 2.x'in F.scaled_dot_product_attention'ı, causal mask'i argüman olarak alabiliyor
+        attn_out = F.scaled_dot_product_attention(
+            q,
+            k,
+            v,
+            attn_mask=attn_mask,
+            dropout_p=self.dropout_p if self.training else 0.0,
+            is_causal=self.is_causal and attn_mask is None,
+        )  # (b, h, s, d)
+
+        out = attn_out.transpose(1, 2).contiguous().view(bsz, seq_len, self.embed_dim)
+        out = self.out_proj(out)
+        return out
+
+
+
+

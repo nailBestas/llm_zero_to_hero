@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mini-llm-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mini-llm-api
+  template:
+    metadata:
+      labels:
+        app: mini-llm-api
+    spec:
+      containers:
+        - name: mini-llm-api
+          image: your-docker-username/mini-llm-api:latest
+          ports:
+            - containerPort: 8000
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+      restartPolicy: Always
