@@ -11,3 +11,4 @@
 
     # Models
     models/
+data/tokenizer/tokenizer.json
